@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-uint32_t totp_sha1(const unsigned char key[32], unsigned int digits,
+uint32_t totp_sha1(const char key[32], unsigned int digits,
         unsigned int timeslice);
 
 #ifdef __cplusplus

@@ -85,21 +85,31 @@ int main(int argc, char** argv) {
     }
 
     if (mode == ADD) {
+        size_t keylen = strlen(key);
         char keyline[33];
-        keyline[32] = '\n';
-        memcpy(keyline, key, 32);
-        if (write(fd, keyline, 33) < 33) {
+        memset(keyline, 0, 33);
+ 
+        memcpy(keyline, key, keylen);
+        keyline[keylen] = '\n';
+
+        if (write(fd, keyline, keylen + 1) < keylen + 1) {
             fprintf(stderr, "ERROR: could not write key!\n");
             return EX_OSERR;
         }
+
         fprintf(stderr, "wrote key to %s\n", file_path);
     } else if (mode == GEN) {
         key = (char*) malloc(32);
-        if (read(fd, key, 32) < 32) {
-            fprintf(stderr, "ERROR: could not read key!\n");
-            return EX_SOFTWARE;
+        read(fd, key, 32);
+
+        for (size_t i = 0; i < 32; ++i) {
+            if (key[i] == '\n') {
+                key [i] = '\0';
+                break;
+            }
         }
-        printf("%u\n", totp_sha1((const unsigned char*) key, 6, 30));
+
+        printf("%u\n", totp_sha1((const char*) key, 6, 30));
     }
 
     return 0;

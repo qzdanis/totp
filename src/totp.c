@@ -19,13 +19,14 @@ static size_t uint2bytes(uint64_t in, unsigned char* out) {
     return ctr;
 }
 
-uint32_t totp_sha1(const unsigned char key[32], unsigned int digits,
+uint32_t totp_sha1(const char key[32], unsigned int digits,
         unsigned int timeslice) {
     /* decode input key */
     unsigned char sha_key[64];
     memset(sha_key, 0, 64);
     size_t olen;
-    base32_decode(sha_key, 20, &olen, (const unsigned char*) key, 32);
+    base32_decode(sha_key, 20, &olen, (const unsigned char*) key,
+            strlen(key));
 
     /* get time value */
     time_t t = time(NULL);
