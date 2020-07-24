@@ -1,0 +1,11 @@
+# macOS files
+.DS_Store
+
+# build files
+ninja_syntax.pyc
+build.ninja
+.ninja*
+
+# build artifacts
+intermediates/*
+totp
