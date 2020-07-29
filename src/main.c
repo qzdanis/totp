@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
             }
         }
 
-        printf("%u\n", totp_sha1((const char*)key, 6, 30));
+        printf("%.6u\n", totp_sha1((const char*)key, 6, 30));
     }
 
     return 0;
