@@ -2,7 +2,7 @@
 #ifndef _BASE32_H_
 #define _BASE32_H_ 1
 
-/* decodes a base32 string into arbitrary binary data 
+/* decodes a base32 string into arbitrary binary data
  * inspired by mbedtls' base64 decode function
  */
 #include <stddef.h>
@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 int base32_decode(unsigned char* dst, size_t dlen, size_t* olen,
-        const unsigned char* src, size_t slen);
+                  const unsigned char* src, size_t slen);
 
 #ifdef __cplusplus
 }

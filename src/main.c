@@ -1,32 +1,27 @@
 /* SPDX-License-Identifier: BSD-2-Clause */
 #include <fcntl.h>
 #include <limits.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sysexits.h>
 #include <sys/stat.h>
+#include <sysexits.h>
 #include <unistd.h>
 
 #include "totp.h"
 
-#define USAGE "Usage:\n" \
-    " totp [-a key] site\n" \
-    "Options:\n" \
-    " -a\tadds the site with the given key\n" \
-    " -h\tdisplay this help and exit" \
-
-enum modes {
-    ADD,
-    GEN
-};
+enum modes { ADD, GEN };
 
 static unsigned char mode = GEN;
 static char* key = NULL;
 
 static void usage() {
-    fprintf(stderr, "%s\n", USAGE);
+    fprintf(stderr, "Usage:\n"
+                    " totp [-a key] site\n"
+                    "Options:\n"
+                    " -a\tadds the site with the given key\n"
+                    " -h\tdisplay this help and exit\n");
 }
 
 static int handle_opt(int ch) {
@@ -66,10 +61,12 @@ int main(int argc, char** argv) {
 
     struct stat st;
     char file_path[PATH_MAX];
+
     sprintf(file_path, "%s/.totp", getenv("HOME"));
+
     if (lstat(file_path, &st) < 0) {
-        if (mkdir(file_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
-                < 0) {
+        if (mkdir(file_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) <
+            0) {
             fprintf(stderr, "ERROR: could not create storage directory\n");
             return EX_OSERR;
         }
@@ -78,6 +75,7 @@ int main(int argc, char** argv) {
     sprintf(file_path, "%s/%s", file_path, argv[0]);
 
     int oflag = (mode == ADD) ? O_WRONLY | O_CREAT | O_TRUNC : O_RDONLY;
+
     if ((fd = open(file_path, oflag, 0660)) < 0) {
         fprintf(stderr, "ERROR: could not open %s\n", file_path);
         return EX_SOFTWARE;
@@ -85,9 +83,10 @@ int main(int argc, char** argv) {
 
     if (mode == ADD) {
         size_t keylen = strlen(key);
+
         char keyline[33];
         memset(keyline, 0, 33);
- 
+
         memcpy(keyline, key, keylen);
         keyline[keylen] = '\n';
 
@@ -98,9 +97,11 @@ int main(int argc, char** argv) {
 
         fprintf(stderr, "wrote key to %s\n", file_path);
     } else if (mode == GEN) {
-        key = (char*) malloc(32);
+        key = (char*)malloc(32);
+
         size_t i = 0;
         char c;
+
         while ((read(fd, &c, 1) > 0) || (i == 32)) {
             if ((c > 47) && (c < 91) && (c != '\n')) {
                 key[i++] = c;
@@ -109,7 +110,7 @@ int main(int argc, char** argv) {
             }
         }
 
-        printf("%u\n", totp_sha1((const char*) key, 6, 30));
+        printf("%u\n", totp_sha1((const char*)key, 6, 30));
     }
 
     return 0;

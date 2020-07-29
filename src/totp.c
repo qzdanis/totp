@@ -14,24 +14,23 @@
 static size_t uint2bytes(uint64_t in, unsigned char* out) {
     size_t ctr = 0;
     for (unsigned int i = sizeof(uint64_t); i > 0; --i) {
-        unsigned char byte = (unsigned char) (in >> (8 * (i - 1)));
+        unsigned char byte = (unsigned char)(in >> (8 * (i - 1)));
         out[ctr++] = byte;
     }
     return ctr;
 }
 
 uint32_t totp_sha1(const char key[32], unsigned int digits,
-        unsigned int timeslice) {
+                   unsigned int timeslice) {
     /* decode input key */
     unsigned char sha_key[64];
     memset(sha_key, 0, 64);
     size_t olen;
-    base32_decode(sha_key, 20, &olen, (const unsigned char*) key,
-            strlen(key));
+    base32_decode(sha_key, 20, &olen, (const unsigned char*)key, strlen(key));
 
     /* get time value */
     time_t t = time(NULL);
-    uint64_t time_step = (uint64_t) t / (uint64_t) timeslice;
+    uint64_t time_step = (uint64_t)t / (uint64_t)timeslice;
 
     /* HMAC */
     /* step 1, create first hash digest */
@@ -57,12 +56,12 @@ uint32_t totp_sha1(const char key[32], unsigned int digits,
 
     /* step 3, create 31-bit substring */
     uint8_t offset_bits = out1[19] & 0x0F;
-    uint32_t p = (uint32_t) (out1[offset_bits] << 24)
-        | (uint32_t) (out1[offset_bits + 1] << 16)
-        | (uint32_t) (out1[offset_bits + 2] << 8)
-        | (uint32_t) (out1[offset_bits + 3]);
+    uint32_t p = (uint32_t)(out1[offset_bits] << 24) |
+                 (uint32_t)(out1[offset_bits + 1] << 16) |
+                 (uint32_t)(out1[offset_bits + 2] << 8) |
+                 (uint32_t)(out1[offset_bits + 3]);
     p &= 0x7FFFFFFF;
 
     /* step 4, return code */
-    return p % (uint32_t) pow(10, digits);
+    return p % (uint32_t)pow(10, digits);
 }

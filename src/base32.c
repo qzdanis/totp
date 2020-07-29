@@ -4,23 +4,18 @@
 #include <errno.h>
 
 static const unsigned char base32_dec_map[128] = {
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-     26,  27,  28,  29,  30,  31, 127, 127, 127, 127,
-    127,  32, 127, 127, 127,   0,   1,   2,   3,   4,
-      5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
-     15,  16,  17,  18,  19,  20,  21,  22,  23,  24,
-     25, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-    127, 127, 127, 127, 127, 127, 127, 127
-};
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+    127, 127, 127, 127, 127, 26,  27,  28,  29,  30,  31,  127, 127, 127, 127,
+    127, 32,  127, 127, 127, 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+    10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,
+    25,  127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+    127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+    127, 127, 127, 127, 127, 127, 127, 127};
 
 int base32_decode(unsigned char* dst, size_t dlen, size_t* olen,
-        const unsigned char* src, size_t slen) {
+                  const unsigned char* src, size_t slen) {
     size_t i = 0;
     size_t x0 = 0;
 /* needed for 32-bit machines, they can't store all 5 bytes in a size_t */
@@ -29,7 +24,7 @@ int base32_decode(unsigned char* dst, size_t dlen, size_t* olen,
 #endif
     size_t n = 0;
     size_t j = 0;
-    unsigned char *p;
+    unsigned char* p;
 
     /* first pass: check for validity and get output length */
     for (; i < slen; ++i) {
@@ -119,22 +114,22 @@ int base32_decode(unsigned char* dst, size_t dlen, size_t* olen,
             n = 0;
             if (j > 0) {
 #if (SIZE_MAX < UINT64_MAX)
-                *(p++) = (unsigned char) (x1      );
+                *(p++) = (unsigned char)(x1);
 #else
-                *(p++) = (unsigned char) (x0 >> 32);
+                *(p++) = (unsigned char)(x0 >> 32);
 #endif
             }
             if (j > 1) {
-                *(p++) = (unsigned char) (x0 >> 24);
+                *(p++) = (unsigned char)(x0 >> 24);
             }
             if (j > 2) {
-                *(p++) = (unsigned char) (x0 >> 16);
+                *(p++) = (unsigned char)(x0 >> 16);
             }
             if (j > 3) {
-                *(p++) = (unsigned char) (x0 >> 8 );
+                *(p++) = (unsigned char)(x0 >> 8);
             }
             if (j > 4) {
-                *(p++) = (unsigned char) (x0      );
+                *(p++) = (unsigned char)(x0);
             }
         }
     }
