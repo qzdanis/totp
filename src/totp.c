@@ -10,6 +10,7 @@
 
 #include "base32.h"
 
+/* converts uint64_t to a byte array */
 static size_t uint2bytes(uint64_t in, unsigned char* out) {
     size_t ctr = 0;
     for (unsigned int i = sizeof(uint64_t); i > 0; --i) {

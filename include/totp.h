@@ -2,6 +2,7 @@
 #ifndef _TOTP_H_
 #define _TOTP_H_ 1
 
+/* generates variable digit codes per RFC 6238 */
 #include <stdint.h>
 
 #ifdef __cplusplus

@@ -2,7 +2,9 @@
 #ifndef _BASE32_H_
 #define _BASE32_H_ 1
 
-/* decodes a base32 string into arbitrary binary data */
+/* decodes a base32 string into arbitrary binary data 
+ * inspired by mbedtls' base64 decode function
+ */
 #include <stddef.h>
 
 #ifdef __cplusplus

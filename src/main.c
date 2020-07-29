@@ -65,18 +65,17 @@ int main(int argc, char** argv) {
     }
 
     struct stat st;
-    char totp_dir[PATH_MAX];
-    sprintf(totp_dir, "%s/.totp", getenv("HOME"));
-    if (lstat(totp_dir, &st) < 0) {
-        if (mkdir(totp_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+    char file_path[PATH_MAX];
+    sprintf(file_path, "%s/.totp", getenv("HOME"));
+    if (lstat(file_path, &st) < 0) {
+        if (mkdir(file_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
                 < 0) {
             fprintf(stderr, "ERROR: could not create storage directory\n");
             return EX_OSERR;
         }
     }
 
-    char file_path[PATH_MAX];
-    sprintf(file_path, "%s/.totp/%s", getenv("HOME"), argv[0]);
+    sprintf(file_path, "%s/%s", file_path, argv[0]);
 
     int oflag = (mode == ADD) ? O_WRONLY | O_CREAT | O_TRUNC : O_RDONLY;
     if ((fd = open(file_path, oflag, 0660)) < 0) {
@@ -100,11 +99,12 @@ int main(int argc, char** argv) {
         fprintf(stderr, "wrote key to %s\n", file_path);
     } else if (mode == GEN) {
         key = (char*) malloc(32);
-        read(fd, key, 32);
-
-        for (size_t i = 0; i < 32; ++i) {
-            if (key[i] == '\n') {
-                key [i] = '\0';
+        size_t i = 0;
+        char c;
+        while ((read(fd, &c, 1) > 0) || (i == 32)) {
+            if ((c > 47) && (c < 91) && (c != '\n')) {
+                key[i++] = c;
+            } else if (c == '\n') {
                 break;
             }
         }
