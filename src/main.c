@@ -84,8 +84,8 @@ int main(int argc, char** argv) {
     if (mode == ADD) {
         size_t keylen = strlen(key);
 
-        char keyline[33];
-        memset(keyline, 0, 33);
+        char keyline[65];
+        memset(keyline, 0, 65);
 
         memcpy(keyline, key, keylen);
         keyline[keylen] = '\n';
@@ -97,12 +97,12 @@ int main(int argc, char** argv) {
 
         fprintf(stderr, "wrote key to %s\n", file_path);
     } else if (mode == GEN) {
-        key = (char*)malloc(32);
+        key = (char*)malloc(64);
 
         size_t i = 0;
         char c;
 
-        while ((read(fd, &c, 1) > 0) || (i == 32)) {
+        while ((read(fd, &c, 1) > 0) || (i == 64)) {
             if ((c > 47) && (c < 91) && (c != '\n')) {
                 key[i++] = c;
             } else if (c == '\n') {
